@@ -1,0 +1,22 @@
+{
+  "name": "investment-staking-contract",
+  "version": "1.0.0",
+  "description": "Investment app for smart-money via using USDT as assets.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "crypto",
+    "blockchain",
+    "smart-contract",
+    "investments",
+    "currency"
+  ],
+  "author": "Danylo Pavenko",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "hardhat": "^2.18.0"
+  }
+}
