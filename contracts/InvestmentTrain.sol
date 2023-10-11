@@ -37,7 +37,9 @@ contract InvestmentTrain {
     uint256 public constant DIVIDEND_INTERVAL = 30 days;
 
     event EarlyWithdrawalStatusChanged(address admin, bool status);
-    event 
+    event NewInvestment(uint256 trainId, address investor, uint256 amount);
+    event InvestmentTrainStarted(uint256 trainId, uint256 startWithEquity, address admin);
+    event InvestmentTrainCompleted(uint256 trainId, address admin);
 
     modifier onlyAdmin() {
         require(msg.sender == admin, "Only admin can call this function.");
@@ -93,6 +95,7 @@ contract InvestmentTrain {
         }
 
         trains[trainId].totalEquity += usdtAmount;
+        emit NewInvestment(trainId, msg.sender, usdtAmount);
     }
 
     function createNewTrain(
@@ -122,6 +125,7 @@ contract InvestmentTrain {
         trains[trainId].startDate = block.timestamp;
         trains[trainId].isStarted = true;
         trains[trainId].isPending = false;
+        emit InvestmentTrainStarted(trainId, trains[trainId].totalEquity, msg.sender);
     }
 
     function completeTrain(uint256 trainId) external onlyAdmin {
@@ -132,6 +136,7 @@ contract InvestmentTrain {
         );
 
         trains[trainId].isCompleted = true;
+        emit InvestmentTrainCompleted(trainId, msg.sender);
     }
 
     function claimDividends(uint256 trainId) external {
