@@ -105,6 +105,39 @@ describe("InvestmentTrain", function() {
             // Ensure the balance increased by the invested amount
             expect(finalBalance - initialBalance).to.equal(1500 * 10**6);
         });
-        
+    });
+    describe("Early Withdrawal", function() {
+        it("Should allow early withdrawal if the flag is enabled by the admin", async function() {
+            // Create a new train
+            await investmentTrain.connect(owner).createNewTrain(1000 * 10**6, 3000);
+    
+            // Mint some USDT for addr1
+            await usdt.mint(await addr1.getAddress(), 2000 * 10**6);
+    
+            // Approve the InvestmentTrain contract to spend USDT
+            await usdt.connect(addr1).approve(await investmentTrain.getAddress(), 2000 * 10**6);
+    
+            // Invest in trainId 1
+            await investmentTrain.connect(addr1).invest(1, 1500 * 10**6);
+
+            const balanceAfterInvestment = await usdt.balanceOf(await addr1.getAddress());
+            expect(balanceAfterInvestment).to.equal(500 * 10**6);
+    
+            // Start the train
+            await investmentTrain.connect(owner).startTrain(1);
+    
+            // Attempt withdrawal (should fail because the lock period isn't over and early withdrawal isn't enabled)
+            await expect(investmentTrain.connect(addr1).withdraw(1)).to.be.revertedWith("Cannot withdraw during locked period.");
+    
+            // Enable early withdrawals
+            await investmentTrain.connect(owner).setEarlyWithdrawEnabled(true);
+    
+            // Withdraw investment
+            await investmentTrain.connect(addr1).withdraw(1);
+    
+            // Check the USDT balance of addr1 after withdrawal
+            const balanceAfterWithdraw = await usdt.balanceOf(await addr1.getAddress());
+            expect(balanceAfterWithdraw).to.equal(2000 * 10**6);
+        });
     });
 });

@@ -186,9 +186,9 @@ contract InvestmentTrain {
     }
 
     function withdraw(uint256 trainId) external {
-        require(trains[trainId].isStarted, "Train has not started.");
+        require(trains[trainId].isStarted || isEarlyWithdrawEnabled, "Train has not started.");
         require(
-            block.timestamp - trains[trainId].startDate >= LOCK_PERIOD,
+            block.timestamp - trains[trainId].startDate >= LOCK_PERIOD || isEarlyWithdrawEnabled,
             "Cannot withdraw during locked period."
         );
 
