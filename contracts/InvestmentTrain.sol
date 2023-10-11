@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "hardhat/console.sol";
 
 contract InvestmentTrain {
     struct Investor {
@@ -145,7 +146,7 @@ contract InvestmentTrain {
                 uint256 monthsSinceLastClaim = (block.timestamp - investor.lastDividendClaimed) / DIVIDEND_INTERVAL;
 
                 // Calculate monthly dividend
-                uint256 monthlyDividend = (train.dividendsAnnualInterestRate / 12 / 10000) * investor.investedAmount;
+                uint256 monthlyDividend = ((train.dividendsAnnualInterestRate / 12) * investor.investedAmount) / 10000;
 
                 // Calculate total dividend
                 dividendAmount = monthsSinceLastClaim * monthlyDividend;
@@ -222,8 +223,8 @@ contract InvestmentTrain {
                 // Calculate the number of months since the last dividend claim
                 uint256 monthsSinceLastClaim = (block.timestamp - investor.lastDividendClaimed) / DIVIDEND_INTERVAL;
 
-                // Calculate monthly dividend
-                uint256 monthlyDividend = (train.dividendsAnnualInterestRate / 12 / 10000) * investor.investedAmount;
+                // Calculate monthly dividend (((3000 / 12)*2000)/10000)*12
+                uint256 monthlyDividend = ((train.dividendsAnnualInterestRate / 12) * investor.investedAmount) / 10000;
 
                 // Return total available dividends
                 return monthsSinceLastClaim * monthlyDividend;
