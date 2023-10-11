@@ -25,15 +25,19 @@ contract InvestmentTrain {
 
     address public admin;
     IERC20 public usdtToken;
+    bool public isEarlyWithdrawEnabled = false;
 
     uint256 public nextTrainId = 1;
     mapping(uint256 => Train) public trains;
     mapping(uint256 => Investor[]) public trainInvestors;
 
     uint256 public constant MIN_EQUITY = 500000 * 10 ** 6; // Adjusted for USDT (6 decimals)
-    uint256 public constant LOCK_PERIOD = 32 days;
+    uint256 public constant LOCK_PERIOD = 365 days;
     uint256 public constant ANNUAL_INTEREST_RATE = 30;
     uint256 public constant DIVIDEND_INTERVAL = 30 days;
+
+    event EarlyWithdrawalStatusChanged(address admin, bool status);
+    event 
 
     modifier onlyAdmin() {
         require(msg.sender == admin, "Only admin can call this function.");
@@ -43,6 +47,11 @@ contract InvestmentTrain {
     constructor(address _usdtToken) {
         admin = msg.sender;
         usdtToken = IERC20(_usdtToken);
+    }
+
+    function setEarlyWithdrawEnabled(bool enabled) external onlyAdmin {
+        isEarlyWithdrawEnabled = enabled;
+        emit EarlyWithdrawalStatusChanged(msg.sender, enabled);
     }
 
     function invest(uint256 trainId, uint256 usdtAmount) external {

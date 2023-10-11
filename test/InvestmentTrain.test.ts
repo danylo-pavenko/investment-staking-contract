@@ -90,7 +90,7 @@ describe("InvestmentTrain", function() {
             expect(dividendsAfterClaim).to.equal(0);  // Should be 0 since dividends were just claimed
         
             // Fast-forward beyond the LOCK_PERIOD to make withdrawals possible
-            await ethers.provider.send("evm_increaseTime", [32 * 24 * 60 * 60]); // This can be adjusted based on the LOCK_PERIOD value
+            await ethers.provider.send("evm_increaseTime", [365 * 24 * 60 * 60]); // This can be adjusted based on the LOCK_PERIOD value
             await ethers.provider.send("evm_mine");
         
             // Before withdrawal, check the USDT balance of addr1
